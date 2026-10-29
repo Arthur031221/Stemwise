@@ -2,13 +2,13 @@
 
 내 컴퓨터에서 돌아가는 연습 스튜디오입니다. 곡을 여섯 개의 스템으로 나누고, 코드와 박자를 보여 주며, 음높이를 바꾸지 않고 반복 구간을 느리게 할 수 있습니다.
 
-RTX 5090에서 스템 분리 속도는 실시간의 122.5배입니다. 2분 3초짜리 곡이 1.00초 만에 끝납니다(`stemwise bench`, fp32, 워밍업 한 번 뒤 세 번 측정해 최고값). 스레드 3개의 Ryzen 5 7500F에서는 같은 곡에 45.2초가 걸리며 실시간의 2.7배입니다.
-
 [라이브 데모](https://arthur031221.github.io/Stemwise/) | [설치](docs/install.md) | [사용법](docs/usage.md) | [설정](docs/config.md) | [아키텍처](docs/architecture.md) | [벤치마크](docs/benchmarks.md)
 
 [English](README.md) | [繁體中文](README.zh-TW.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | 한국어 | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Português (Brasil)](README.pt-BR.md)
 
 ![Stemwise: 드럼 음소거, 한 마디 반복, 70%로 감속, 클릭 켜기, 키 이동](assets/demo.gif)
+
+RTX 5090에서 스템 분리 속도는 실시간의 122.5배입니다. 2분 3초짜리 곡이 1.00초 만에 끝납니다(`stemwise bench`, fp32, 워밍업 한 번 뒤 세 번 측정해 최고값). 스레드 3개의 Ryzen 5 7500F에서는 같은 곡에 45.2초가 걸리며 실시간의 2.7배입니다.
 
 파일은 내 컴퓨터를 떠나지 않습니다. 그리고 코드 레인이 틀린 곳은 숨기지 않고 보여 드리고 싶습니다.
 
@@ -89,6 +89,9 @@ surf.mp3: 123s, 166.7 BPM, B major, 105 chords, on cuda
 | L | 이 마디 반복 또는 반복 전환 | Up, Down | 반음씩 키 이동 |
 | C | 클릭 켜기와 끄기 | Left, Right | 한 마디 이동 |
 | X | 실수(트레이너용) | 1에서 6 | 스템 음소거 |
+| Esc | 루프 지우기 | Shift + Left, Right | 루프를 한 마디 늘이거나 줄이기 |
+
+Stemwise는 곡마다 속도, 음높이, 음소거, 음량, 루프를 브라우저에 기억하고 마지막에 쓰던 곡을 다시 엽니다.
 
 ## 구성
 

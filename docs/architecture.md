@@ -45,6 +45,7 @@ Plain ES modules and CSS. There is no bundler and no framework, so the folder is
 | `js/timeline.js`, `js/peaks.js` | canvas waveform timeline with the beat grid and loop handles |
 | `js/chords.js`, `js/diagrams.js` | chord lane and SVG guitar and piano shapes |
 | `js/trainer.js` | the speed trainer state machine |
+| `js/memory.js` | what the studio keeps in `localStorage`: each song's setup, a few preferences and the last song |
 | `js/i18n.js`, `locales/*.json` | strings, nine locales |
 | `js/api.js` | fetch wrapper. In demo mode it reads `demo/` instead of `/api` |
 

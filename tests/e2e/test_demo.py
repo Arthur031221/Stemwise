@@ -150,6 +150,16 @@ def test_phone_layout_has_no_sideways_scroll(page, demo_url):
     assert width <= 391, width
 
 
+def test_phone_layout_shows_whole_stem_names(page, demo_url):
+    page.set_viewport_size({"width": 390, "height": 800})
+    open_demo(page, demo_url)
+    clipped = page.evaluate(
+        "[...document.querySelectorAll('.strip .name')]"
+        ".filter(e => e.scrollWidth > e.clientWidth).map(e => e.textContent)"
+    )
+    assert clipped == []
+
+
 def test_stems_are_aligned_with_the_beat_grid(page, demo_url, demo_meta):
     """Decoded AAC stems must be as long as the analysis says, or the bars would drift."""
     open_demo(page, demo_url)
@@ -196,3 +206,52 @@ def test_l_loops_the_current_bar_and_toggles_it(page, demo_url, demo_meta):
     page.keyboard.press("ArrowLeft")
     page.wait_for_timeout(200)
     assert seconds(page) == pytest.approx(bars[1], abs=0.1)
+
+
+def test_practice_setup_comes_back_after_a_reload(page, demo_url, demo_meta):
+    open_demo(page, demo_url)
+    page.click("#tempo-presets button:text('70%')")
+    page.keyboard.press("ArrowDown")
+    page.keyboard.press("2")
+    page.locator("#click-toggle").click()
+    page.keyboard.press("ArrowRight")
+    page.keyboard.press("l")
+    info = page.inner_text("#loop-info")
+    assert info == "Bars 2 to 2"
+    open_demo(page, demo_url)
+    assert page.inner_text("#tempo-out") == "70%"
+    assert page.input_value("#tempo") == "70"
+    assert page.inner_text("#pitch-out") == "-1"
+    assert page.input_value("#pitch") == "-1"
+    assert page.inner_text("#chip-key") == "D# major"
+    assert page.locator(".strip[data-stem=drums] button.m").get_attribute("aria-pressed") == "true"
+    assert page.get_attribute("#click-toggle", "aria-pressed") == "true"
+    assert page.inner_text("#loop-info") == info
+    assert page.get_attribute("#loop-toggle", "aria-pressed") == "true"
+    assert page.locator("#clock-time").inner_text() != ""
+    assert page.problems == []
+
+
+def test_a_corrupt_saved_setup_is_ignored(page, demo_url):
+    page.goto(demo_url)
+    page.evaluate("localStorage.setItem('stemwise.song.surf-shimmy', '{broken')")
+    page.evaluate("localStorage.setItem('stemwise.prefs', '7')")
+    open_demo(page, demo_url)
+    assert page.inner_text("#tempo-out") == "100%"
+    assert page.problems == []
+
+
+def test_shift_arrows_resize_the_loop_by_bars(page, demo_url, demo_meta):
+    open_demo(page, demo_url)
+    page.keyboard.press("Shift+ArrowRight")
+    assert page.inner_text("#loop-info") == "Bars 1 to 1"
+    page.keyboard.press("Shift+ArrowRight")
+    page.keyboard.press("Shift+ArrowRight")
+    assert page.inner_text("#loop-info") == "Bars 1 to 3"
+    page.keyboard.press("Shift+ArrowLeft")
+    assert page.inner_text("#loop-info") == "Bars 1 to 2"
+    page.keyboard.press("Shift+ArrowLeft")
+    page.keyboard.press("Shift+ArrowLeft")
+    assert page.inner_text("#loop-info") == "Bars 1 to 1"
+    assert page.get_attribute("#timeline", "aria-label").startswith("Timeline")
+    assert page.problems == []

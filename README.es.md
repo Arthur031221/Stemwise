@@ -2,13 +2,13 @@
 
 Un estudio de práctica local. Separa una canción en seis pistas, muestra los acordes y el pulso, y ralentiza un bucle sin cambiar el tono.
 
-Separación de pistas 122,5 veces más rápida que el tiempo real en una RTX 5090. Una canción de 2 minutos y 3 segundos tarda 1,00 s (`stemwise bench`, fp32, mejor de 3 tras una pasada de calentamiento). En un Ryzen 5 7500F con 3 hilos la misma canción tarda 45,2 s, es decir, 2,7 veces el tiempo real.
-
 [Demo en vivo](https://arthur031221.github.io/Stemwise/) | [Instalación](docs/install.md) | [Uso](docs/usage.md) | [Configuración](docs/config.md) | [Arquitectura](docs/architecture.md) | [Benchmarks](docs/benchmarks.md)
 
 [English](README.md) | [繁體中文](README.zh-TW.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | Español | [Français](README.fr.md) | [Deutsch](README.de.md) | [Português (Brasil)](README.pt-BR.md)
 
 ![Stemwise: silenciar la batería, repetir un compás, bajar al 70 %, activar el clic, transponer](assets/demo.gif)
+
+Separación de pistas 122,5 veces más rápida que el tiempo real en una RTX 5090. Una canción de 2 minutos y 3 segundos tarda 1,00 s (`stemwise bench`, fp32, mejor de 3 tras una pasada de calentamiento). En un Ryzen 5 7500F con 3 hilos la misma canción tarda 45,2 s, es decir, 2,7 veces el tiempo real.
 
 Tus archivos no salen de tu equipo, y prefiero enseñarte dónde se equivoca la pista de acordes antes que esconderlo.
 
@@ -89,6 +89,9 @@ Suelta un archivo en la página y espera a la barra de progreso. Arrastra sobre 
 | L | repetir este compás o alternar el bucle | Up, Down | transponer un semitono |
 | C | activar y desactivar el clic | Left, Right | saltar un compás |
 | X | fallo, para el entrenador | 1 a 6 | silenciar una pista |
+| Esc | borrar el bucle | Shift + Left, Right | bucle un compás más largo o más corto |
+
+Stemwise recuerda en tu navegador la velocidad, el tono, los silencios, los niveles y el bucle de cada canción, y reabre la última que usaste.
 
 ## Qué incluye
 

@@ -2,13 +2,13 @@
 
 Ein lokales Übungsstudio. Es trennt einen Song in sechs Spuren, zeigt Akkorde und Beats und verlangsamt eine Schleife, ohne die Tonhöhe zu ändern.
 
-Stem-Trennung mit 122,5-facher Echtzeit auf einer RTX 5090. Ein Song von 2 Minuten und 3 Sekunden braucht 1,00 s (`stemwise bench`, fp32, bester von 3 Läufen nach einem Aufwärmlauf). Auf einem Ryzen 5 7500F mit 3 Threads braucht derselbe Song 45,2 s, also das 2,7-Fache der Echtzeit.
-
 [Live-Demo](https://arthur031221.github.io/Stemwise/) | [Installation](docs/install.md) | [Verwendung](docs/usage.md) | [Konfiguration](docs/config.md) | [Architektur](docs/architecture.md) | [Benchmarks](docs/benchmarks.md)
 
 [English](README.md) | [繁體中文](README.zh-TW.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Español](README.es.md) | [Français](README.fr.md) | Deutsch | [Português (Brasil)](README.pt-BR.md)
 
 ![Stemwise: Schlagzeug stummschalten, einen Takt wiederholen, auf 70 % verlangsamen, Klick einschalten, transponieren](assets/demo.gif)
+
+Stem-Trennung mit 122,5-facher Echtzeit auf einer RTX 5090. Ein Song von 2 Minuten und 3 Sekunden braucht 1,00 s (`stemwise bench`, fp32, bester von 3 Läufen nach einem Aufwärmlauf). Auf einem Ryzen 5 7500F mit 3 Threads braucht derselbe Song 45,2 s, also das 2,7-Fache der Echtzeit.
 
 Deine Dateien verlassen deinen Rechner, und ich zeige dir lieber, wo die Akkordspur danebenliegt, als es zu verstecken.
 
@@ -89,6 +89,9 @@ Ziehe eine Datei auf die Seite und warte auf den Fortschrittsbalken. Ziehe über
 | L | diesen Takt wiederholen oder die Schleife umschalten | Up, Down | um einen Halbton transponieren |
 | C | Klick ein und aus | Left, Right | einen Takt springen |
 | X | Fehler, für den Trainer | 1 bis 6 | eine Spur stummschalten |
+| Esc | Schleife löschen | Shift + Left, Right | Schleife um einen Takt länger oder kürzer |
+
+Stemwise merkt sich in deinem Browser Tempo, Tonhöhe, Stummschaltungen, Pegel und Schleife jedes Songs und öffnet den zuletzt benutzten Song wieder.
 
 ## Was enthalten ist
 

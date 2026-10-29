@@ -2,13 +2,13 @@
 
 手元のマシンで動く練習スタジオです。曲を6つのステムに分け、コードとビートを表示し、音程を変えずにループを遅くできます。
 
-RTX 5090 でのステム分離は実時間の 122.5 倍です。2分3秒の曲が 1.00 秒で終わります（`stemwise bench`、fp32、ウォームアップ1回の後に3回計測して最良値）。3スレッドの Ryzen 5 7500F では同じ曲に 45.2 秒かかり、実時間の 2.7 倍です。
-
 [ライブデモ](https://arthur031221.github.io/Stemwise/) | [インストール](docs/install.md) | [使い方](docs/usage.md) | [設定](docs/config.md) | [アーキテクチャ](docs/architecture.md) | [ベンチマーク](docs/benchmarks.md)
 
 [English](README.md) | [繁體中文](README.zh-TW.md) | [简体中文](README.zh-CN.md) | 日本語 | [한국어](README.ko.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Português (Brasil)](README.pt-BR.md)
 
 ![Stemwise：ドラムをミュートし、1小節をループし、70%に減速し、クリックを入れ、移調する](assets/demo.gif)
+
+RTX 5090 でのステム分離は実時間の 122.5 倍です。2分3秒の曲が 1.00 秒で終わります（`stemwise bench`、fp32、ウォームアップ1回の後に3回計測して最良値）。3スレッドの Ryzen 5 7500F では同じ曲に 45.2 秒かかり、実時間の 2.7 倍です。
 
 ファイルはあなたのマシンから出ません。そして、コードレーンが間違っている場所は隠さずに見せたいと考えています。
 
@@ -89,6 +89,9 @@ surf.mp3: 123s, 166.7 BPM, B major, 105 chords, on cuda
 | L | この小節をループ、またはループの切り替え | Up、Down | 半音ずつ移調 |
 | C | クリックのオンとオフ | Left、Right | 1小節移動 |
 | X | ミス（トレーナー用） | 1 から 6 | ステムのミュート |
+| Esc | ループを解除 | Shift + Left, Right | ループを1小節長く、または短く |
+
+Stemwise は曲ごとの速度、ピッチ、ミュート、音量、ループをブラウザに保存し、前回使った曲をそのまま開きます。
 
 ## 構成
 

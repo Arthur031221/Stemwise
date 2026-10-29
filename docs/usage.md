@@ -15,11 +15,17 @@ In the player:
 
 - Click a stem name to mute it, use the solo button to hear one, and drag the slider to change its level.
 - Drag across the timeline to set a loop, or press `L` to loop the bar the playhead is in.
-- Change the tempo from 25% to 200% without changing pitch. Transpose by semitones independently.
+- Change the tempo from 25% to 150% without changing pitch. Transpose by semitones independently.
 - Turn on the click and the count-in to practise against a metronome that follows the song's own beat grid.
 - The speed trainer starts a loop slow and raises the tempo by a step after a set number of clean passes (three by default). Press `X` to
   mark a miss and the count of clean passes starts over.
 - Click a chord to see the guitar and piano shapes for it.
+
+### What is remembered
+
+The studio keeps each song's speed, pitch, mutes, solos, stem levels and loop in your browser's local storage, along with the click
+settings and the flat or sharp choice. The next visit reopens the last song with that setup. Nothing leaves your machine. Deleting a
+song removes its saved setup, and clearing the site data in your browser removes the rest.
 
 ### Keyboard shortcuts
 
@@ -30,6 +36,7 @@ In the player:
 | C | click track on and off |
 | X | mark a miss in the speed trainer |
 | Esc | clear the loop |
+| Shift + Left, Right | make the loop one bar shorter or longer. Shift + Right with no loop starts one on this bar |
 | [ and ] | tempo down and up by 5 percent |
 | Left, Right | next bar, or back to the start of this bar and then the previous one |
 | Up, Down | transpose by one semitone |

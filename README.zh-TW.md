@@ -2,13 +2,13 @@
 
 本機運行的練習工作室。它把一首歌分成六軌，顯示和弦與節拍，並能在不改變音高的情況下放慢循環段落。
 
-在 RTX 5090 上，音軌分離速度是即時的 122.5 倍。一首 2 分 3 秒的歌只要 1.00 秒（`stemwise bench`，fp32，暖機一次後三次取最佳）。在 3 個執行緒的 Ryzen 5 7500F 上，同一首歌需要 45.2 秒，也就是即時的 2.7 倍。
-
 [線上示範](https://arthur031221.github.io/Stemwise/) | [安裝](docs/install.md) | [使用](docs/usage.md) | [設定](docs/config.md) | [架構](docs/architecture.md) | [效能測試](docs/benchmarks.md)
 
 [English](README.md) | 繁體中文 | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | [Português (Brasil)](README.pt-BR.md)
 
 ![Stemwise：鼓靜音、循環一小節、放慢到 70%、開啟節拍器、移調](assets/demo.gif)
+
+在 RTX 5090 上，音軌分離速度是即時的 122.5 倍。一首 2 分 3 秒的歌只要 1.00 秒（`stemwise bench`，fp32，暖機一次後三次取最佳）。在 3 個執行緒的 Ryzen 5 7500F 上，同一首歌需要 45.2 秒，也就是即時的 2.7 倍。
 
 你的檔案不會離開你的電腦，而且我寧可讓你看到和弦軌哪裡出錯，也不想把它藏起來。
 
@@ -89,6 +89,9 @@ surf.mp3: 123s, 166.7 BPM, B major, 105 chords, on cuda
 | L | 循環這一小節，或切換循環 | Up、Down | 移調一個半音 |
 | C | 節拍器開關 | Left、Right | 跳一小節 |
 | X | 失誤，給速度訓練器 | 1 到 6 | 音軌靜音 |
+| Esc | 清除循環 | Shift + Left, Right | 循環加長或縮短一小節 |
+
+Stemwise 會在瀏覽器裡記住每首歌的速度、音高、靜音、音量和循環，下次開啟時回到你上次用的那首歌。
 
 ## 內容一覽
 

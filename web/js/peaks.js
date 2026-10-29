@@ -43,3 +43,12 @@ export function snapToBars(downbeats, duration, a, b) {
   const end = last + 1 < downbeats.length ? downbeats[last + 1] : duration;
   return [start, end];
 }
+
+/** Grow or shrink a loop by whole bars at its end. A loop never gets shorter than one bar. */
+export function resizeLoop(downbeats, duration, loop, delta) {
+  if (downbeats.length < 2) return loop;
+  const first = Math.max(0, barIndexAt(downbeats, loop.start + 0.01));
+  const last = Math.max(first, Math.min(downbeats.length - 1, barIndexAt(downbeats, loop.end - 0.01) + delta));
+  const [start, end] = snapToBars(downbeats, duration, downbeats[first], downbeats[last]);
+  return { start, end };
+}

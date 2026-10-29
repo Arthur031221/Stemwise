@@ -133,9 +133,14 @@ input[type="range"]:hover::-webkit-slider-thumb { transform: scale(1.15); }
   main { padding: 12px; }
   .topbar { flex-wrap: wrap; padding: 10px 12px; gap: 8px; }
   .song-picker { order: 3; flex-basis: 100%; max-width: none; }
-  .board { grid-template-columns: 112px 1fr; }
-  .strip { padding: 6px 6px 6px 8px; grid-template-columns: 1fr auto auto; }
-  .strip .sm { width: 24px; height: 24px; }
+  .board { grid-template-columns: 120px 1fr; }
+  .strip { padding: 6px 6px 6px 8px; grid-template-columns: auto auto 1fr; gap: 3px 5px; }
+  .strip .name { grid-column: 1 / -1; }
+  .strip .sm { width: 26px; height: 24px; }
+  .strip input[type="range"] { grid-column: auto; min-width: 0; }
+  .transport { gap: 8px; padding: 12px; }
+  .transport .play { width: 44px; height: 44px; }
+  .transport .clock { font-size: 18px; }
   .song-title { font-size: 20px; }
   .chord-name { font-size: 36px; }
   .export { margin-left: 0; }

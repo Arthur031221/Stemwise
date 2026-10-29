@@ -1,10 +1,11 @@
 import { Api, STEMS } from "./api.js";
 import { Player } from "./player.js";
 import { Timeline, HEAD_H, LANE_H, PEAKS_PER_SECOND } from "./timeline.js";
-import { computePeaks, barIndexAt } from "./peaks.js";
+import { computePeaks, barIndexAt, resizeLoop } from "./peaks.js";
 import { parseChord, transposeKey, transposeLabel } from "./chords.js";
 import { guitarSvg, pianoSvg } from "./diagrams.js";
 import { Trainer } from "./trainer.js";
+import { memory, packSong, unpackSong, packPrefs, unpackPrefs } from "./memory.js";
 import { LOCALES, initLocale, setLocale, locale, t } from "./i18n.js";
 
 const $ = (id) => document.getElementById(id);
@@ -32,6 +33,15 @@ const state = {
 };
 
 let timeline;
+
+// ---------- memory ----------
+
+/** Keep the setup of the open song and the global preferences, so a reload picks up where practice stopped. */
+function remember() {
+  if (!state.song) return;
+  memory.saveSong(localStorage, state.song.id, packSong(state));
+  memory.savePrefs(localStorage, packPrefs(state));
+}
 
 // ---------- helpers ----------
 
@@ -120,6 +130,17 @@ async function loadSong(meta) {
   state.loop = null;
   state.loopOn = false;
   state.shownChord = null;
+  const saved = unpackSong(memory.song(localStorage, meta.id), STEMS, meta.duration);
+  state.tempo = saved.tempo ?? 100;
+  state.pitch = saved.pitch ?? 0;
+  if (saved.gains) state.gains = new Map(Object.entries(saved.gains));
+  for (const name of saved.muted ?? []) state.muted.add(name);
+  for (const name of saved.solo ?? []) state.solo.add(name);
+  if (saved.loop) {
+    state.loop = { start: saved.loop.start, end: saved.loop.end };
+    state.loopOn = saved.loop.on;
+  }
+  memory.saveLast(localStorage, meta.id);
   trainer.reset();
   setTrainer(false);
 
@@ -136,6 +157,8 @@ async function loadSong(meta) {
   $("export-btn").hidden = demo;
   renderCredit(meta);
   pushAll();
+  setPitch(state.pitch);
+  if (state.loop) player.seek(state.loop.start);
   updateLoopUi();
   tick();
   return meta;
@@ -175,6 +198,7 @@ function buildStrips() {
     solo.setAttribute("aria-label", `${stemLabel(name)}: ${t("strip.solo")}`);
     mute.onclick = () => toggleSet(state.muted, name);
     solo.onclick = () => toggleSet(state.solo, name);
+    strip.querySelector("input").value = state.gains.get(name);
     strip.querySelector("input").oninput = (e) => { state.gains.set(name, Number(e.target.value)); pushGains(); };
     box.append(strip);
   }
@@ -194,6 +218,7 @@ function effectiveGain(name) {
 function pushGains() {
   const gains = STEMS.map(effectiveGain);
   player.setGains(gains);
+  remember();
   const silent = new Set(STEMS.filter((_, i) => gains[i] === 0));
   timeline.setMuted(silent);
   for (const strip of $("strips").children) {
@@ -224,6 +249,7 @@ function setTempo(percent, fromUser = true) {
   for (const b of $("tempo-presets").children) b.classList.toggle("on", Number(b.dataset.value) === state.tempo);
   if (fromUser && state.trainerOn) trainer.reset();
   state.anchor = { sample: player.sample, stamp: performance.now() };
+  remember();
 }
 
 function showKey() {
@@ -239,18 +265,21 @@ function setPitch(semitones) {
   showKey();
   timeline.setLabelFn(chordLabel);
   tick();
+  remember();
 }
 
 function pushClick() {
   const song = state.song;
   if (!song) return;
   player.setClick(state.click, song.beats, song.downbeats, state.clickGain);
+  remember();
 }
 
 function pushLoop() {
   if (state.loop) player.setLoop(state.loop.start, state.loop.end, state.loopOn);
   else player.setLoop(0, 0, false);
   timeline.setLoop(state.loopOn || state.loop ? state.loop : null);
+  remember();
 }
 
 function setLoop(range) {
@@ -360,6 +389,18 @@ function barAtPlayhead() {
   return { start: d[i], end: d[i + 1] ?? state.song.duration };
 }
 
+/** Shift with an arrow: make the loop one bar longer or shorter. With no loop yet, Shift+Right starts one on this bar. */
+function resizeLoopBy(delta) {
+  if (!state.loop) {
+    const bar = delta > 0 ? barAtPlayhead() : null;
+    if (bar) setLoop(bar);
+    return;
+  }
+  const next = resizeLoop(state.song.downbeats, state.song.duration, state.loop, delta);
+  setLoop(next);
+  if (player.time < next.start || player.time >= next.end) player.seek(next.start);
+}
+
 function seekRelativeBars(delta) {
   const d = state.song.downbeats;
   const cur = Math.max(0, barIndexAt(d, player.time + 0.05));
@@ -443,6 +484,7 @@ function buildExportMenu() {
     if (!confirm(t("export.confirm_delete", { name: state.song.title }))) return;
     player.pause();
     await api.remove(id);
+    memory.forget(localStorage, id);
     state.song = null;
     await afterSongsChanged();
   };
@@ -520,8 +562,9 @@ function wire() {
   $("count-in").onclick = () => {
     state.countIn = !state.countIn;
     $("count-in").setAttribute("aria-pressed", String(state.countIn));
+    remember();
   };
-  $("flats").onchange = (e) => { state.flats = e.target.checked; state.shownChord = null; showKey(); timeline.setLabelFn(chordLabel); tick(); };
+  $("flats").onchange = (e) => { state.flats = e.target.checked; state.shownChord = null; showKey(); timeline.setLabelFn(chordLabel); tick(); remember(); };
   $("zoom-in").onclick = () => timeline.zoom(1.5);
   $("zoom-out").onclick = () => timeline.zoom(1 / 1.5);
 
@@ -580,6 +623,14 @@ function wire() {
   window.addEventListener("keydown", onKey);
 }
 
+function applyPrefs() {
+  Object.assign(state, unpackPrefs(memory.prefs(localStorage)));
+  $("click-toggle").setAttribute("aria-pressed", String(state.click));
+  $("click-volume").value = state.clickGain;
+  $("count-in").setAttribute("aria-pressed", String(state.countIn));
+  $("flats").checked = state.flats;
+}
+
 function relabel() {
   if (state.song) {
     for (const strip of $("strips").children) strip.querySelector(".name").textContent = stemLabel(strip.dataset.stem);
@@ -605,8 +656,8 @@ function onKey(e) {
     Escape: () => $("loop-clear").click(),
     "[": () => setTempo(state.tempo - 5),
     "]": () => setTempo(state.tempo + 5),
-    ArrowLeft: () => seekRelativeBars(-1),
-    ArrowRight: () => seekRelativeBars(1),
+    ArrowLeft: () => (e.shiftKey ? resizeLoopBy(-1) : seekRelativeBars(-1)),
+    ArrowRight: () => (e.shiftKey ? resizeLoopBy(1) : seekRelativeBars(1)),
     ArrowUp: () => setPitch(state.pitch + 1),
     ArrowDown: () => setPitch(state.pitch - 1),
     Home: () => $("restart").click(),
@@ -624,16 +675,15 @@ async function main() {
   });
   timeline.setLabelFn(chordLabel);
   wire();
+  applyPrefs();
   requestAnimationFrame(frame);
   await api.detect();
   const songs = await refreshSongs();
-  if (api.mode === "demo") {
-    $("add-song").hidden = true;
-    if (songs.length) await openSong(songs[0].id);
-    else show("empty");
-  } else if (songs.length) {
-    const ready = songs.find((s) => s.status === "ready") || songs[0];
-    await openSong(ready.id);
+  const last = memory.last(localStorage);
+  if (api.mode === "demo") $("add-song").hidden = true;
+  if (songs.length) {
+    const pick = songs.find((s) => s.id === last) || songs.find((s) => s.status === "ready") || songs[0];
+    await openSong(pick.id);
   } else {
     show("empty");
   }

@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import { parseChord, chordName, transposeLabel, transposeKey, pianoNotes, guitarShape } from "../../web/js/chords.js";
 import { Trainer } from "../../web/js/trainer.js";
-import { computePeaks, barIndexAt, snapToBars } from "../../web/js/peaks.js";
+import { computePeaks, barIndexAt, snapToBars, resizeLoop } from "../../web/js/peaks.js";
 import { pickLocale, format, LOCALES } from "../../web/js/i18n.js";
 
 test("chords parse and name", () => {
@@ -125,10 +125,61 @@ test("every key used in code and HTML exists in English", () => {
   const en = JSON.parse(readFileSync(new URL("../../web/locales/en.json", import.meta.url), "utf8"));
   const src = ["index.html", "js/app.js"].map((f) => readFileSync(new URL(`../../web/${f}`, import.meta.url), "utf8")).join("\n");
   const used = new Set();
-  for (const m of src.matchAll(/data-i18n(?:-title)?="([\w.]+)"/g)) used.add(m[1]);
+  for (const m of src.matchAll(/data-i18n(?:-title|-aria)?="([\w.]+)"/g)) used.add(m[1]);
   for (const m of src.matchAll(/\bt\("([\w.]+)"/g)) used.add(m[1]);
   for (const m of src.matchAll(/\bt\(`([\w.]+)\$\{/g)) for (const k of Object.keys(en)) if (k.startsWith(m[1])) used.add(k);
   for (const m of src.matchAll(/t\((?:state\.trainerOn|player\.playing|on) \? "([\w.]+)" : "([\w.]+)"/g)) { used.add(m[1]); used.add(m[2]); }
   for (const m of src.matchAll(/t\(`([\w.]+)\.\$\{/g)) void m;
   for (const key of used) assert.ok(key in en, `missing key ${key}`);
+});
+
+test("a practice setup survives a round trip through storage", async () => {
+  const { packSong, unpackSong, packPrefs, unpackPrefs, memory } = await import("../../web/js/memory.js");
+  const stems = ["vocals", "drums", "bass", "guitar", "piano", "other"];
+  const state = {
+    tempo: 70, pitch: -2, gains: new Map(stems.map((n) => [n, n === "bass" ? 0.4 : 1])),
+    muted: new Set(["drums"]), solo: new Set(), loop: { start: 4.5, end: 9 }, loopOn: true,
+  };
+  const items = new Map();
+  const storage = { getItem: (k) => items.get(k) ?? null, setItem: (k, v) => items.set(k, v), removeItem: (k) => items.delete(k) };
+  memory.saveSong(storage, "a", packSong(state));
+  const back = unpackSong(memory.song(storage, "a"), stems, 36);
+  assert.equal(back.tempo, 70);
+  assert.equal(back.pitch, -2);
+  assert.equal(back.gains.bass, 0.4);
+  assert.deepEqual(back.muted, ["drums"]);
+  assert.deepEqual(back.loop, { start: 4.5, end: 9, on: true });
+  memory.forget(storage, "a");
+  assert.equal(memory.song(storage, "a"), null);
+  assert.deepEqual(unpackPrefs(packPrefs({ click: true, clickGain: 0.3, countIn: false, flats: true })), { click: true, clickGain: 0.3, countIn: false, flats: true });
+});
+
+test("stored values that do not make sense are dropped", async () => {
+  const { unpackSong, unpackPrefs, memory } = await import("../../web/js/memory.js");
+  const stems = ["vocals", "drums"];
+  const out = unpackSong({
+    tempo: 9000, pitch: "x", gains: { drums: -4 }, muted: ["drums", "kazoo"],
+    loop: { start: 30, end: 20 },
+  }, stems, 36);
+  assert.equal(out.tempo, 150);
+  assert.equal(out.pitch, 0);
+  assert.deepEqual(out.gains, { vocals: 1, drums: 0 });
+  assert.deepEqual(out.muted, ["drums"]);
+  assert.equal(out.loop, undefined);
+  assert.equal(unpackSong({ loop: { start: 1, end: 200 } }, stems, 36).loop, undefined);
+  assert.deepEqual(unpackSong("junk", stems, 36), {});
+  assert.deepEqual(unpackPrefs({ click: "yes", clickGain: 7 }), { clickGain: 1 });
+  const broken = { getItem: () => "{nope", setItem: () => { throw new Error("full"); } };
+  assert.equal(memory.song(broken, "a"), null);
+  memory.saveSong(broken, "a", {});
+});
+
+test("a loop grows and shrinks by whole bars and never drops under one bar", () => {
+  const bars = [0, 2, 4, 6, 8];
+  assert.deepEqual(resizeLoop(bars, 10, { start: 2, end: 4 }, 1), { start: 2, end: 6 });
+  assert.deepEqual(resizeLoop(bars, 10, { start: 2, end: 6 }, -1), { start: 2, end: 4 });
+  assert.deepEqual(resizeLoop(bars, 10, { start: 2, end: 4 }, -1), { start: 2, end: 4 });
+  assert.deepEqual(resizeLoop(bars, 10, { start: 6, end: 8 }, 1), { start: 6, end: 8 + 2 });
+  assert.deepEqual(resizeLoop(bars, 10, { start: 8, end: 10 }, 1), { start: 8, end: 10 });
+  assert.deepEqual(resizeLoop([0], 10, { start: 0, end: 10 }, 1), { start: 0, end: 10 });
 });

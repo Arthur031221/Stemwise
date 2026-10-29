@@ -2,13 +2,13 @@
 
 Un studio de pratique local. Il sépare un morceau en six pistes, affiche les accords et les temps, et ralentit une boucle sans changer la hauteur.
 
-Séparation des pistes 122,5 fois plus rapide que le temps réel sur une RTX 5090. Un morceau de 2 minutes 3 secondes prend 1,00 s (`stemwise bench`, fp32, meilleur de 3 après un passage d'échauffement). Sur un Ryzen 5 7500F avec 3 threads, le même morceau prend 45,2 s, soit 2,7 fois le temps réel.
-
 [Démo en ligne](https://arthur031221.github.io/Stemwise/) | [Installation](docs/install.md) | [Utilisation](docs/usage.md) | [Configuration](docs/config.md) | [Architecture](docs/architecture.md) | [Benchmarks](docs/benchmarks.md)
 
 [English](README.md) | [繁體中文](README.zh-TW.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Español](README.es.md) | Français | [Deutsch](README.de.md) | [Português (Brasil)](README.pt-BR.md)
 
 ![Stemwise : couper la batterie, boucler une mesure, ralentir à 70 %, activer le clic, transposer](assets/demo.gif)
+
+Séparation des pistes 122,5 fois plus rapide que le temps réel sur une RTX 5090. Un morceau de 2 minutes 3 secondes prend 1,00 s (`stemwise bench`, fp32, meilleur de 3 après un passage d'échauffement). Sur un Ryzen 5 7500F avec 3 threads, le même morceau prend 45,2 s, soit 2,7 fois le temps réel.
 
 Vos fichiers ne quittent pas votre machine, et je préfère vous montrer où la piste d'accords se trompe plutôt que de le cacher.
 
@@ -89,6 +89,9 @@ Déposez un fichier sur la page et attendez la barre de progression. Faites glis
 | L | boucler cette mesure ou activer la boucle | Up, Down | transposer d'un demi-ton |
 | C | clic activé et désactivé | Left, Right | aller d'une mesure |
 | X | raté, pour l'entraîneur | 1 à 6 | couper une piste |
+| Esc | effacer la boucle | Shift + Left, Right | boucle plus longue ou plus courte d'une mesure |
+
+Stemwise garde dans votre navigateur la vitesse, la hauteur, les pistes coupées, les niveaux et la boucle de chaque morceau, et rouvre le dernier que vous avez utilisé.
 
 ## Ce qu'il y a dedans
 

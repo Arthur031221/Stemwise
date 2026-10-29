@@ -2,13 +2,13 @@
 
 Um estúdio de prática local. Ele separa uma música em seis faixas, mostra acordes e batidas e desacelera um trecho em loop sem mudar o tom.
 
-Separação de faixas 122,5 vezes mais rápida que o tempo real em uma RTX 5090. Uma música de 2 minutos e 3 segundos leva 1,00 s (`stemwise bench`, fp32, melhor de 3 após uma execução de aquecimento). Em um Ryzen 5 7500F com 3 threads, a mesma música leva 45,2 s, ou seja, 2,7 vezes o tempo real.
-
 [Demo ao vivo](https://arthur031221.github.io/Stemwise/) | [Instalação](docs/install.md) | [Uso](docs/usage.md) | [Configuração](docs/config.md) | [Arquitetura](docs/architecture.md) | [Benchmarks](docs/benchmarks.md)
 
 [English](README.md) | [繁體中文](README.zh-TW.md) | [简体中文](README.zh-CN.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [Español](README.es.md) | [Français](README.fr.md) | [Deutsch](README.de.md) | Português (Brasil)
 
 ![Stemwise: silenciar a bateria, repetir um compasso, reduzir para 70 %, ligar o clique, transpor](assets/demo.gif)
+
+Separação de faixas 122,5 vezes mais rápida que o tempo real em uma RTX 5090. Uma música de 2 minutos e 3 segundos leva 1,00 s (`stemwise bench`, fp32, melhor de 3 após uma execução de aquecimento). Em um Ryzen 5 7500F com 3 threads, a mesma música leva 45,2 s, ou seja, 2,7 vezes o tempo real.
 
 Seus arquivos não saem da sua máquina, e prefiro mostrar onde a faixa de acordes erra a esconder isso.
 
@@ -89,6 +89,9 @@ Solte um arquivo na página e espere a barra de progresso. Arraste sobre a régu
 | L | repetir este compasso ou alternar o loop | Up, Down | transpor um semitom |
 | C | clique ligado e desligado | Left, Right | pular um compasso |
 | X | erro, para o treinador | 1 a 6 | silenciar uma faixa |
+| Esc | limpar o loop | Shift + Left, Right | loop um compasso maior ou menor |
+
+O Stemwise lembra no seu navegador a velocidade, o tom, os silenciamentos, os níveis e o loop de cada música, e reabre a última que você usou.
 
 ## O que vem dentro
 

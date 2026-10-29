@@ -57,6 +57,7 @@ export function apply(root) {
     el.title = text;
     el.setAttribute("aria-label", text);
   }
+  for (const el of root.querySelectorAll("[data-i18n-aria]")) el.setAttribute("aria-label", t(el.dataset.i18nAria));
 }
 
 export async function initLocale() {

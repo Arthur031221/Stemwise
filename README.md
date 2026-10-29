@@ -2,13 +2,13 @@
 
 A local practice studio. It splits a song into six stems, shows the chords and beats, and slows a loop down without changing the pitch.
 
-122.5x realtime stem separation on an RTX 5090. A 2 minute 3 second song takes 1.00 s (`stemwise bench`, fp32, best of 3 after one warm-up run). On a Ryzen 5 7500F with 3 threads the same song takes 45.2 s, which is 2.7x realtime.
-
 [Live demo](https://arthur031221.github.io/Stemwise/) | [Install](docs/install.md) | [Usage](docs/usage.md) | [Config](docs/config.md) | [Architecture](docs/architecture.md) | [Benchmarks](docs/benchmarks.md)
 
 English | [Traditional Chinese](README.zh-TW.md) | [Simplified Chinese](README.zh-CN.md) | [Japanese](README.ja.md) | [Korean](README.ko.md) | [Spanish](README.es.md) | [French](README.fr.md) | [German](README.de.md) | [Portuguese (Brazil)](README.pt-BR.md)
 
 ![Stemwise: mute the drums, loop one bar, slow it to 70 percent, add the click, transpose](assets/demo.gif)
+
+Stem separation runs at 122.5x realtime on an RTX 5090. A 2 minute 3 second song takes 1.00 s (`stemwise bench`, fp32, best of 3 after one warm-up run). On a Ryzen 5 7500F with 3 threads the same song takes 45.2 s, which is 2.7x realtime.
 
 Your files never leave your machine, and I'd rather show you where the chord lane is wrong than hide it.
 
@@ -89,6 +89,9 @@ Drop a file on the page and wait for the progress bar. Click and drag on the rul
 | L | loop this bar, or toggle the loop | Up, Down | transpose a semitone |
 | C | click on and off | Left, Right | seek a bar |
 | X | miss, for the trainer | 1 to 6 | mute a stem |
+| Esc | clear the loop | Shift + Left, Right | loop longer or shorter by a bar |
+
+Stemwise remembers each song's speed, pitch, mutes, levels and loop in your browser, and reopens the last song you used.
 
 ## What is in the box
 

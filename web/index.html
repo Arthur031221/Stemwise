@@ -65,10 +65,10 @@
       <div class="board">
         <div class="strips" id="strips"></div>
         <div class="timeline" id="timeline-wrap">
-          <canvas id="timeline" aria-label="Timeline"></canvas>
+          <canvas id="timeline" role="img" data-i18n-aria="timeline.label" aria-label="Timeline"></canvas>
           <div class="zoom">
-            <button id="zoom-out" class="btn icon small" aria-label="Zoom out">-</button>
-            <button id="zoom-in" class="btn icon small" aria-label="Zoom in">+</button>
+            <button id="zoom-out" class="btn icon small" data-i18n-title="zoom.out" aria-label="Zoom out">-</button>
+            <button id="zoom-in" class="btn icon small" data-i18n-title="zoom.in" aria-label="Zoom in">+</button>
           </div>
         </div>
       </div>
@@ -87,7 +87,7 @@
           </div>
           <div class="row">
             <button id="click-toggle" class="btn toggle" aria-pressed="false" data-i18n="click.title">Click</button>
-            <input id="click-volume" type="range" min="0" max="1" step="0.05" value="0.6" aria-label="Click volume">
+            <input id="click-volume" type="range" min="0" max="1" step="0.05" value="0.6" data-i18n-title="click.volume" aria-label="Click volume">
             <button id="count-in" class="btn toggle" aria-pressed="false" data-i18n="click.countin">Count in</button>
           </div>
         </div>
