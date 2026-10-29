@@ -20,7 +20,7 @@
  "stage.error": "Falló",
  "error.processing": "No se pudo procesar este archivo: {reason}",
  "demo.chip": "Fragmento de demostración",
- "demo.noupload": "Para subir archivos hace falta el servidor local. Ejecuta pip install stemwise y luego stemwise serve.",
+ "demo.noupload": "Para subir archivos hace falta el servidor local. Ejecuta pip install git+https://github.com/Arthur031221/Stemwise y luego stemwise serve.",
  "credit.prefix": "Música:",
  "credit.suffix": "Usada bajo su licencia, pistas separadas con Stemwise.",
  "export.title": "Exportar",

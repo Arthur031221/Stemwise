@@ -20,6 +20,9 @@ def test_empty_library_then_upload_then_export_and_delete(page, server_url, song
     page.click("#export-btn")
     hrefs = page.eval_on_selector_all("#export-menu a", "els => els.map(e => e.href)")
     assert len(hrefs) == 5
+    page.keyboard.press("Escape")
+    assert page.locator("#export-menu").is_hidden()
+    page.click("#export-btn")
     for href in hrefs:
         assert page.request.get(href).ok, href
     with page.expect_download() as download:

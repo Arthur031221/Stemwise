@@ -183,3 +183,11 @@ test("a loop grows and shrinks by whole bars and never drops under one bar", () 
   assert.deepEqual(resizeLoop(bars, 10, { start: 8, end: 10 }, 1), { start: 8, end: 10 });
   assert.deepEqual(resizeLoop([0], 10, { start: 0, end: 10 }, 1), { start: 0, end: 10 });
 });
+
+test("no locale tells people to install a package that is not on PyPI", () => {
+  const dir = new URL("../../web/locales/", import.meta.url);
+  for (const f of readdirSync(dir)) {
+    const text = readFileSync(new URL(f, dir), "utf8");
+    assert.ok(!/pip install stemwise/.test(text), `${f} still says pip install stemwise`);
+  }
+});

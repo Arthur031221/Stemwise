@@ -126,6 +126,29 @@ test("the engine stops at the end of the song", () => {
   assert.ok(e.ended);
 });
 
+test("play after the end starts the song again from the top", () => {
+  const e = player(1.5);
+  render(e, 3);
+  assert.ok(e.ended);
+  e.play();
+  render(e, 0.5);
+  assert.equal(e.playing, true);
+  assert.ok(e.position / SR < 1, `position ${e.position / SR}`);
+});
+
+test("play after the end restarts at the loop start when a loop is on", () => {
+  const e = player(6);
+  e.setLoop(2 * SR, 3 * SR, true);
+  e.seek(5.9 * SR);
+  e.setLoop(0, 0, false);
+  render(e, 1);
+  assert.ok(e.ended);
+  e.setLoop(2 * SR, 3 * SR, true);
+  e.play();
+  render(e, 0.5);
+  assert.ok(e.position / SR >= 2 && e.position / SR < 3, `position ${e.position / SR}`);
+});
+
 test("seeking moves the position", () => {
   const e = player(10);
   render(e, 0.5);

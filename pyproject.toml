@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "stemwise"
-version = "0.1.0"
+version = "0.1.1"
 description = "A local practice studio: split a song into stems, see chords and beats, slow it down without changing pitch, loop the hard bar."
 readme = "README.md"
 license = "MIT"

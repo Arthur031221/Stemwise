@@ -71,7 +71,11 @@ export class Engine {
     this.lastFired = this._firstBeatAtOrAfter(this.nominal) - 1;
   }
 
-  play() { this.playing = true; }
+  /** Pressing play after the song ran out starts it again, from the loop start when a loop is on. */
+  play() {
+    if (this.ended) this.seek(this.loop.on ? this.loop.start : 0);
+    this.playing = true;
+  }
   pause() { this.playing = false; }
 
   seek(sample) {

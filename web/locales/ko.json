@@ -20,7 +20,7 @@
  "stage.error": "실패",
  "error.processing": "이 파일을 처리할 수 없습니다: {reason}",
  "demo.chip": "데모 클립",
- "demo.noupload": "업로드하려면 로컬 서버가 필요합니다. pip install stemwise 후 stemwise serve를 실행하세요.",
+ "demo.noupload": "업로드하려면 로컬 서버가 필요합니다. pip install git+https://github.com/Arthur031221/Stemwise 후 stemwise serve를 실행하세요.",
  "credit.prefix": "음악:",
  "credit.suffix": "라이선스에 따라 사용했으며 스템은 Stemwise로 분리했습니다.",
  "export.title": "내보내기",

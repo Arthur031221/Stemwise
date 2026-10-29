@@ -20,7 +20,7 @@
  "stage.error": "失敗",
  "error.processing": "このファイルを処理できませんでした: {reason}",
  "demo.chip": "デモ音源",
- "demo.noupload": "アップロードにはローカルサーバーが必要です。pip install stemwise のあと stemwise serve を実行してください。",
+ "demo.noupload": "アップロードにはローカルサーバーが必要です。pip install git+https://github.com/Arthur031221/Stemwise のあと stemwise serve を実行してください。",
  "credit.prefix": "音楽:",
  "credit.suffix": "ライセンスに従って使用。ステムは Stemwise で分離しました。",
  "export.title": "書き出し",

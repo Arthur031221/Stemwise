@@ -20,7 +20,7 @@
  "stage.error": "失敗",
  "error.processing": "無法處理這個檔案：{reason}",
  "demo.chip": "示範片段",
- "demo.noupload": "上傳需要本機伺服器。請執行 pip install stemwise，再執行 stemwise serve。",
+ "demo.noupload": "上傳需要本機伺服器。請執行 pip install git+https://github.com/Arthur031221/Stemwise，再執行 stemwise serve。",
  "credit.prefix": "音樂：",
  "credit.suffix": "依授權使用，音軌由 Stemwise 分離。",
  "export.title": "匯出",

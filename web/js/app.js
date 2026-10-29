@@ -108,13 +108,14 @@ async function loadSong(meta) {
   player.pause();
   await player.init();
 
-  const buffers = [];
-  for (const [i, stem] of STEMS.entries()) {
+  let done = 0;
+  const buffers = await Promise.all(STEMS.map(async (stem) => {
     const res = await fetch(api.stemUrl(meta.id, stem));
     if (!res.ok) throw new Error(`${stem}: ${res.status}`);
-    buffers.push(await player.ctx.decodeAudioData(await res.arrayBuffer()));
-    $("proc-bar").style.width = `${10 + ((i + 1) / STEMS.length) * 80}%`;
-  }
+    const buffer = await player.ctx.decodeAudioData(await res.arrayBuffer());
+    $("proc-bar").style.width = `${10 + (++done / STEMS.length) * 80}%`;
+    return buffer;
+  }));
   await player.load(buffers);
 
   const bins = Math.ceil(meta.duration * PEAKS_PER_SECOND);
@@ -349,15 +350,16 @@ function onLooped() {
 async function togglePlay() {
   if (!state.song) return;
   if (player.playing) { player.pause(); updatePlayIcon(); return; }
-  if (state.countIn && state.click) await countIn();
+  if (state.countIn) await countIn();
   await player.play();
   state.anchor = { sample: player.sample, stamp: performance.now() };
   updatePlayIcon();
 }
 
 function updatePlayIcon() {
-  $("icon-play").hidden = player.playing;
-  $("icon-pause").hidden = !player.playing;
+  // SVG elements have no hidden property, so the attribute is set directly.
+  $("icon-play").toggleAttribute("hidden", player.playing);
+  $("icon-pause").toggleAttribute("hidden", !player.playing);
   $("play").setAttribute("aria-label", t(player.playing ? "transport.pause" : "transport.play"));
 }
 
@@ -490,6 +492,8 @@ function buildExportMenu() {
   };
   menu.append(del);
 }
+
+function menuOpen() { return !$("export-menu").hidden; }
 
 function toggleMenu(open) {
   const menu = $("export-menu");
@@ -648,12 +652,14 @@ function onKey(e) {
   if (e.target.closest("input[type=number], select") || e.metaKey || e.ctrlKey || e.altKey || !state.song) return;
   if (document.body.dataset.view !== "studio") return;
   const k = e.key;
+  // A focused slider keeps its own arrow keys, so keyboard users can still move it.
+  if (e.target.closest("input[type=range]") && /^(Arrow|Home|End)/.test(k)) return;
   const handled = {
     " ": () => togglePlay().catch(report),
     l: () => $("loop-toggle").click(),
     c: () => $("click-toggle").click(),
     x: () => $("tr-miss").click(),
-    Escape: () => $("loop-clear").click(),
+    Escape: () => (menuOpen() ? toggleMenu(false) : $("loop-clear").click()),
     "[": () => setTempo(state.tempo - 5),
     "]": () => setTempo(state.tempo + 5),
     ArrowLeft: () => (e.shiftKey ? resizeLoopBy(-1) : seekRelativeBars(-1)),

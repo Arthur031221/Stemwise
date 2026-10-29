@@ -20,7 +20,7 @@
  "stage.error": "失败",
  "error.processing": "无法处理这个文件：{reason}",
  "demo.chip": "演示片段",
- "demo.noupload": "上传需要本地服务器。请运行 pip install stemwise，再运行 stemwise serve。",
+ "demo.noupload": "上传需要本地服务器。请运行 pip install git+https://github.com/Arthur031221/Stemwise，再运行 stemwise serve。",
  "credit.prefix": "音乐：",
  "credit.suffix": "按其许可使用，音轨由 Stemwise 分离。",
  "export.title": "导出",

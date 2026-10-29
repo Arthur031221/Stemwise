@@ -3,7 +3,7 @@
 Stemwise needs Python 3.10 or newer and ffmpeg on your PATH.
 
 ```sh
-pip install stemwise
+pip install git+https://github.com/Arthur031221/Stemwise
 stemwise doctor
 ```
 

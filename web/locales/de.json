@@ -20,7 +20,7 @@
  "stage.error": "Fehlgeschlagen",
  "error.processing": "Diese Datei konnte nicht verarbeitet werden: {reason}",
  "demo.chip": "Demo-Ausschnitt",
- "demo.noupload": "Zum Hochladen wird der lokale Server benötigt. Führe pip install stemwise und dann stemwise serve aus.",
+ "demo.noupload": "Zum Hochladen wird der lokale Server benötigt. Führe pip install git+https://github.com/Arthur031221/Stemwise und dann stemwise serve aus.",
  "credit.prefix": "Musik:",
  "credit.suffix": "Unter ihrer Lizenz verwendet, Stems mit Stemwise getrennt.",
  "export.title": "Exportieren",

@@ -37,6 +37,17 @@ def test_demo_loads_with_analysis_and_no_errors(page, demo_url, demo_meta):
     assert page.problems == []
 
 
+def test_play_button_swaps_between_play_and_pause_icons(page, demo_url):
+    open_demo(page, demo_url)
+    assert page.locator("#icon-play").is_visible()
+    assert page.locator("#icon-pause").is_hidden()
+    page.click("#play")
+    page.wait_for_selector("#icon-pause", state="visible", timeout=5000)
+    assert page.locator("#icon-play").is_hidden()
+    page.click("#play")
+    page.wait_for_selector("#icon-play", state="visible", timeout=5000)
+
+
 def test_play_pause_and_seek(page, demo_url):
     open_demo(page, demo_url)
     page.click("#play")
@@ -255,3 +266,36 @@ def test_shift_arrows_resize_the_loop_by_bars(page, demo_url, demo_meta):
     assert page.inner_text("#loop-info") == "Bars 1 to 1"
     assert page.get_attribute("#timeline", "aria-label").startswith("Timeline")
     assert page.problems == []
+
+
+def test_play_after_the_song_ended_starts_again_from_the_top(page, demo_url, demo_meta):
+    open_demo(page, demo_url)
+    box = page.locator("#timeline").bounding_box()
+    page.mouse.click(box["x"] + box["width"] * 0.985, box["y"] + 150)
+    page.click("#play")
+    page.wait_for_selector("#icon-play", state="visible", timeout=8000)
+    assert seconds(page) > demo_meta["duration"] - 1.5
+    page.click("#play")
+    page.wait_for_timeout(1200)
+    assert page.locator("#icon-pause").is_visible()
+    assert 0.3 < seconds(page) < 3
+
+
+def test_arrow_keys_move_a_focused_slider_and_not_the_song(page, demo_url):
+    open_demo(page, demo_url)
+    page.focus("#tempo")
+    page.keyboard.press("ArrowRight")
+    assert page.inner_text("#tempo-out") == "101%"
+    page.keyboard.press("ArrowUp")
+    assert page.inner_text("#pitch-out") == "0"
+    assert seconds(page) == 0
+
+
+def test_count_in_waits_a_bar_even_with_the_click_off(page, demo_url):
+    open_demo(page, demo_url)
+    page.click("#count-in")
+    assert page.get_attribute("#click-toggle", "aria-pressed") == "false"
+    page.click("#play")
+    page.wait_for_timeout(500)
+    assert seconds(page) == 0
+    page.wait_for_function("document.getElementById('clock-time').textContent !== '0:00.0'", timeout=5000)
