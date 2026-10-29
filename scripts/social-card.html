@@ -1,0 +1,67 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Stemwise social card</title>
+<style>
+  :root { --bg:#0f0e0d; --panel:#181614; --line:#302c27; --text:#f3eee7; --muted:#a59c90; --accent:#ffb02e;
+    --vocals:#ff7a9c; --drums:#ffb02e; --bass:#4cc9f0; --guitar:#7bd88f; --piano:#b794f6; --other:#9aa5b1; }
+  * { box-sizing: border-box; margin: 0; }
+  body { width: 1200px; height: 675px; background: var(--bg); color: var(--text); overflow: hidden;
+    font: 16px/1.4 Inter, "Segoe UI", system-ui, "Noto Sans", sans-serif; position: relative; }
+  .glow { position: absolute; inset: 0; background: radial-gradient(900px 420px at 85% 105%, rgb(255 176 46 / 16%), transparent 70%); }
+  .wrap { position: relative; height: 100%; padding: 64px 72px; display: grid; grid-template-columns: 1fr 440px; gap: 56px; align-items: center; }
+  .brand { display: flex; align-items: center; gap: 14px; font-weight: 700; font-size: 26px; letter-spacing: -.01em; }
+  .logo { width: 44px; height: 44px; border-radius: 12px; background: var(--accent); display: grid; place-items: center; }
+  .logo i { display: block; width: 5px; border-radius: 3px; background: #1a1200; margin: 0 2.5px; }
+  h1 { font-size: 64px; line-height: 1.02; letter-spacing: -.035em; margin: 44px 0 22px; font-weight: 750; }
+  h1 span { color: var(--accent); }
+  p.sub { font-size: 25px; color: var(--muted); max-width: 580px; }
+  .stat { margin-top: 46px; display: flex; align-items: baseline; gap: 16px; }
+  .stat b { font: 700 54px/1 ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace; color: var(--accent); letter-spacing: -.03em; }
+  .stat em { font-style: normal; font-size: 18px; color: var(--muted); max-width: 300px; }
+  .lanes { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 22px 22px 14px; box-shadow: 0 18px 60px rgb(0 0 0 / 45%); }
+  .lane { display: grid; grid-template-columns: 74px 1fr; gap: 12px; align-items: center; height: 58px; border-bottom: 1px solid #23201c; }
+  .lane:last-child { border-bottom: 0; }
+  .lane label { font-size: 14px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .lane label:before { content: ""; width: 4px; height: 16px; border-radius: 2px; background: var(--c); }
+  .bars { display: flex; align-items: center; gap: 3px; height: 100%; }
+  .bars i { flex: 1; background: var(--c); border-radius: 2px; opacity: .92; min-height: 2px; }
+  .chords { display: flex; gap: 6px; margin: 0 0 14px 86px; font: 600 15px ui-monospace, Menlo, Consolas, monospace; }
+  .chords span { background: #26221e; border: 1px solid var(--line); border-radius: 7px; padding: 3px 9px; }
+  .chords span.on { background: var(--accent); color: #1a1200; border-color: transparent; }
+  .loop { position: absolute; left: 0; width: 26%; top: 0; bottom: 0; }
+  .grid { position: relative; }
+  .lane:nth-child(odd) { background: transparent; }
+  .region { position: absolute; left: 86px; width: 112px; top: 0; bottom: 0; background: rgb(255 176 46 / 13%); border-left: 2px solid var(--accent); border-right: 2px solid var(--accent); pointer-events: none; }
+</style>
+<div class="glow"></div>
+<div class="wrap">
+  <div>
+    <div class="brand"><div class="logo"><i style="height:12px"></i><i style="height:22px"></i><i style="height:16px"></i></div>Stemwise</div>
+    <h1>Split the song.<br><span>Loop the hard bar.</span></h1>
+    <p class="sub">A local practice studio: six stems, chords, beats, and slow-down without changing pitch.</p>
+    <div class="stat"><b>122.5x</b><em>realtime separation on an RTX 5090, 2.7x on a CPU</em></div>
+  </div>
+  <div class="lanes">
+    <div class="chords"><span class="on">E</span><span>D</span><span>E</span><span>D</span><span>E</span></div>
+    <div class="grid" id="grid"></div>
+  </div>
+</div>
+<script>
+  // deterministic pseudo-waveforms so the card is reproducible
+  let seed = 7;
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const lanes = [["Vocals", "--vocals", 0.05], ["Drums", "--drums", 0.85], ["Bass", "--bass", 0.45], ["Guitar", "--guitar", 0.75], ["Piano", "--piano", 0.12], ["Other", "--other", 0.18]];
+  const grid = document.getElementById("grid");
+  for (const [name, colour, level] of lanes) {
+    const lane = document.createElement("div");
+    lane.className = "lane";
+    lane.style.setProperty("--c", `var(${colour})`);
+    const bars = Array.from({ length: 44 }, (_, i) => {
+      const hit = i % 4 === 0 ? 1 : 0.35 + rnd() * 0.5;
+      return `<i style="height:${Math.max(3, Math.round(level * hit * 46))}px"></i>`;
+    }).join("");
+    lane.innerHTML = `<label>${name}</label><div class="bars">${bars}</div>`;
+    grid.append(lane);
+  }
+  grid.insertAdjacentHTML("beforeend", '<div class="region"></div>');
+</script>
